@@ -84,6 +84,10 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
 .party-lbl{font-size:10px;font-weight:500;color:#c8a84b;text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
 .card-tenant{font-size:12px;color:#94a3b8;margin-top:4px;margin-bottom:4px}
 .card-landlord{color:#6b7280}
+.card-left{flex:1;min-width:0}
+.card-right{text-align:right;flex-shrink:0}
+.card-psf{font-size:12px;font-weight:600;color:#fcd34d;margin-top:3px;white-space:nowrap}
+.card-cap{font-size:12px;font-weight:600;color:#4ade80;margin-top:2px;white-space:nowrap}
 .card-addr-city{font-weight:400;color:#94a3b8;font-size:13px}
 </style>
 </head>
@@ -95,7 +99,7 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
       <h1>Sale Comps</h1>
       <span class="badge" id="sale-badge">0</span>
     </div>
-    <input class="search" id="sale-q" placeholder="Search address, city, buyer, seller…" oninput="renderSale()">
+    <input class="search" id="sale-q" placeholder="Search" oninput="renderSale()">
     <div class="filters">
       <select class="fsel" id="f-sub" onchange="renderSale()"><option value="">All Submarkets</option><option value="128/North">128/North</option>
 <option value="128/South">128/South</option>
@@ -146,7 +150,7 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
       <h1>Lease Comps</h1>
       <span class="badge" id="lease-badge">0</span>
     </div>
-    <input class="search" id="lease-q" placeholder="Search tenant, address, landlord…" oninput="renderLease()">
+    <input class="search" id="lease-q" placeholder="Search" oninput="renderLease()">
     <div class="filters">
       <select class="fsel" id="f-lmkt" onchange="renderLease()"><option value="">All Markets</option><option value="NH">NH</option>
 <option value="North">North</option>
@@ -319,18 +323,23 @@ function renderSale(){
     else if(sdl.includes('awarded'))   datePill = '<span class="pill p-awd">Awarded</span>';
     else if(e.saleDate)                datePill = '<span class="pill p-gray">' + e.saleDate + '</span>';
 
-    const psfPill  = e.psf  ? '<span class="pill p-gold">'  + e.psf  + '/sf</span>' : '';
-    const capPill  = e.capRate ? '<span class="pill p-green">' + e.capRate + '</span>' : '';
+    const psfTxt = e.psf ? e.psf + '/sf' : '';
+    const capRaw = (e.capRate||'').trim();
+    const capTxt = (capRaw && capRaw!=='-') ? (/%/.test(capRaw) ? capRaw + ' cap' : capRaw) : '';
     const clsPill  = e.class  ? '<span class="pill p-blue">Class ' + e.class + '</span>' : '';
     const sf       = e.rsf ? Number(e.rsf).toLocaleString() + ' SF' : '';
     const meta     = [sf, fmtClr(e.clearHeight) ? fmtClr(e.clearHeight)+' clear' : '', e.yrBuilt ? 'Built '+e.yrBuilt : ''].filter(Boolean).join(' · ');
 
     return '<div class="card" onclick="showSale(' + i + ')">'
-      + '<div class="card-row"><div class="card-addr">' + esc(e.address) + (e.city ? '<span class="card-addr-city">, ' + esc(e.city) + '</span>' : '') + '</div>'
-      + (e.price ? '<div class="card-price">' + e.price + '</div>' : '')
+      + '<div class="card-row"><div class="card-left"><div class="card-addr">' + esc(e.address) + (e.city ? '<span class="card-addr-city">, ' + esc(e.city) + '</span>' : '') + '</div>'
+          + '<div class="card-meta">' + datePill + clsPill + '</div>'
+          + '<div class="card-sub">' + esc(meta) + '</div></div>'
+      + ((e.price||psfTxt||capTxt) ? '<div class="card-right">'
+          + (e.price ? '<div class="card-price">' + e.price + '</div>' : '')
+          + (psfTxt ? '<div class="card-psf">' + esc(psfTxt) + '</div>' : '')
+          + (capTxt ? '<div class="card-cap">' + esc(capTxt) + '</div>' : '')
+          + '</div>' : '')
       + '</div>'
-      + '<div class="card-meta">' + datePill + psfPill + capPill + clsPill + '</div>'
-      + '<div class="card-sub">' + esc(meta) + '</div>'
       + (e.buyer || e.seller ? '<div class="card-parties">' 
           + (e.buyer  ? '<span class="party-item"><span class="party-lbl">Buyer</span> ' + esc(e.buyer)  + '</span>' : '')
           + (e.seller ? '<span class="party-item"><span class="party-lbl">Seller</span> ' + esc(e.seller) + '</span>' : '')
@@ -479,7 +488,7 @@ function closeModal(){
 function fmtClr(v){
   if(v==null) return '';
   const t = String(v).replace(/['\u2019"\u201d]/g,'').replace(/\s*ft\.?/i,'').replace(/\s*-\s*/g,'-').trim();
-  return t ? t + ' ft' : '';
+  return t ? t + "'" : '';
 }
 
 function esc(s){
