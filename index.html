@@ -100,40 +100,6 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
       <span class="badge" id="sale-badge">0</span>
     </div>
     <input class="search" id="sale-q" placeholder="Search" oninput="renderSale()">
-    <div class="filters">
-      <select class="fsel" id="f-sub" onchange="renderSale()"><option value="">All Submarkets</option><option value="128/North">128/North</option>
-<option value="128/South">128/South</option>
-<option value="495/Mass Pike">495/Mass Pike</option>
-<option value="495/North">495/North</option>
-<option value="495/North / Urban">495/North / Urban</option>
-<option value="495/South">495/South</option>
-<option value="495/West">495/West</option>
-<option value="Eastern Hartford">Eastern Hartford</option>
-<option value="Hartford">Hartford</option>
-<option value="NH">NH</option>
-<option value="New Haven">New Haven</option>
-<option value="North">North</option>
-<option value="North/NH">North/NH</option>
-<option value="Northwest">Northwest</option>
-<option value="RI">RI</option>
-<option value="Somerville/Chelsea">Somerville/Chelsea</option>
-<option value="South">South</option>
-<option value="Urban">Urban</option>
-<option value="VT">VT</option>
-<option value="Various">Various</option>
-<option value="Western Mass">Western Mass</option>
-<option value="Worcester">Worcester</option></select>
-      <select class="fsel" id="f-st"  onchange="renderSale()"><option value="">All States</option><option value="CT">CT</option>
-<option value="MA">MA</option>
-<option value="NH">NH</option>
-<option value="RI">RI</option>
-<option value="VT">VT</option></select>
-      <select class="fsel" id="f-yr"  onchange="renderSale()"><option value="">All Years</option><option value="Active">Active</option><option value="2026">2026</option>
-<option value="2025">2025</option>
-<option value="2024">2024</option>
-<option value="2023">2023</option>
-<option value="2022">2022</option></select>
-    </div>
   </div>
   <div class="tabs" id="sale-tabs">
     <button class="tab on"  onclick="setTab('sold',this)">Sold</button>
@@ -151,35 +117,6 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
       <span class="badge" id="lease-badge">0</span>
     </div>
     <input class="search" id="lease-q" placeholder="Search" oninput="renderLease()">
-    <div class="filters">
-      <select class="fsel" id="f-lmkt" onchange="renderLease()"><option value="">All Markets</option><option value="NH">NH</option>
-<option value="North">North</option>
-<option value="RI">RI</option>
-<option value="South">South</option>
-<option value="Urban">Urban</option>
-<option value="West">West</option>
-<option value="Worcester">Worcester</option></select>
-      <select class="fsel" id="f-ltyp" onchange="renderLease()"><option value="">All Types</option><option value="Expansion">Expansion</option>
-<option value="Extension">Extension</option>
-<option value="Extention">Extention</option>
-<option value="New">New</option>
-<option value="New Lease">New Lease</option>
-<option value="New to Market">New to Market</option>
-<option value="Relocation">Relocation</option>
-<option value="Relocation/Expansion">Relocation/Expansion</option>
-<option value="Renewal">Renewal</option>
-<option value="Renewal & Expansion">Renewal & Expansion</option>
-<option value="Renewal (Downsize)">Renewal (Downsize)</option>
-<option value="Renewal/Expansion">Renewal/Expansion</option>
-<option value="Sublease">Sublease</option></select>
-      <select class="fsel" id="f-lyr"  onchange="renderLease()"><option value="">All Years</option><option value="2026">2026</option>
-<option value="2025">2025</option>
-<option value="2024">2024</option>
-<option value="2023">2023</option>
-<option value="2022">2022</option>
-<option value="2021">2021</option>
-<option value="2020">2020</option></select>
-    </div>
   </div>
   <div class="tabs" id="lease-mkt-tabs">
     <button class="tab on" onclick="setLeaseMkt('All',this)">All</button>
@@ -275,9 +212,9 @@ function toMs(sd){
 
 function renderSale(){
   const q   = (document.getElementById('sale-q').value||'').toLowerCase();
-  const sub = document.getElementById('f-sub').value;
-  const st  = document.getElementById('f-st').value;
-  const yr  = document.getElementById('f-yr').value;
+  const sub = '';
+  const st  = '';
+  const yr  = '';
 
   // Select data pool by tab
   let pool;
@@ -398,9 +335,9 @@ function setLeaseMkt(m, btn){
 function renderLease(){
   const q   = (document.getElementById('lease-q').value||'').toLowerCase();
   const isPend = leaseMkt==='Pending';
-  const mkt = (leaseMkt !== 'All' && !isPend) ? leaseMkt : document.getElementById('f-lmkt').value;
-  const typ = document.getElementById('f-ltyp').value;
-  const yr  = document.getElementById('f-lyr').value;
+  const mkt = (leaseMkt !== 'All' && !isPend) ? leaseMkt : '';
+  const typ = '';
+  const yr  = '';
 
   fLease = LEASES.filter((l,i) => {
     l._idx = i;
