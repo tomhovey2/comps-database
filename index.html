@@ -90,6 +90,24 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
 .lc-addr{font-size:14px;font-weight:600;color:#e2e8f0;margin-top:4px;line-height:1.3}
 .lc-det{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;padding-top:8px;border-top:1px solid #2a2d3a}
 .lc-d{font-size:13px;font-weight:600;color:#e2e8f0}
+.lc{padding:8px 11px;margin-bottom:6px}
+.lc .lc-tenant{font-size:14px}
+.lc .lc-sf{font-size:16px}
+.lc .lc-rent{font-size:12px;margin-top:1px}
+.lc .lc-addr{font-size:12.5px;margin-top:2px}
+.lc .card-meta{margin-top:4px;gap:3px}
+.lc .pill{font-size:10px;padding:1px 6px}
+.lc .lc-det{margin-top:5px;padding-top:5px;gap:2px 12px}
+.lc .lc-d{font-size:12px}
+#sale-list .card{padding:10px 11px;margin-bottom:8px}
+#sale-list .card-addr{font-size:13.5px}
+#sale-list .card-price{font-size:13.5px}
+#sale-list .card-psf,#sale-list .card-cap{font-size:11.5px}
+#sale-list .card-meta{margin-top:4px}
+#sale-list .card-sub{font-size:11.5px;margin-top:3px}
+#sale-list .pill{font-size:10.5px;padding:1px 7px}
+#sale-list .party-item{font-size:12.5px}
+#sale-list .card-parties{margin-top:4px;gap:2px 8px}
 .card-left{flex:1;min-width:0}
 .card-right{text-align:right;flex-shrink:0}
 .card-psf{font-size:12px;font-weight:600;color:#fcd34d;margin-top:3px;white-space:nowrap}
@@ -382,7 +400,7 @@ function renderLease(){
     const freeTxt = l.freeRent || '';
     const det = [['Term',termTxt],['TI',tiTxt],['Free Rent',freeTxt]].filter(([,v]) => v)
       .map(([k,v]) => '<span class="lc-d"><span class="party-lbl">'+k+'</span> '+esc(v)+'</span>').join('');
-    return '<div class="card" onclick="showLease(' + i + ')">'
+    return '<div class="card lc" onclick="showLease(' + i + ')">'
       + '<div class="card-row"><div class="card-left">'
       +   '<div class="lc-tenant">' + esc(l.tenant) + '</div>'
       +   '<div class="lc-addr">' + esc(sub) + '</div>'
