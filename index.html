@@ -84,23 +84,24 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
 .party-lbl{font-size:10px;font-weight:500;color:#c8a84b;text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
 .card-tenant{font-size:12px;color:#94a3b8;margin-top:4px;margin-bottom:4px}
 .card-landlord{color:#6b7280}
-.lc-tenant{font-size:16px;font-weight:700;color:#fff;line-height:1.3}
+.lc-tenant{font-size:16px;font-weight:700;color:#fff;line-height:1.3;letter-spacing:.01em}
 .lc-sf{font-size:18px;font-weight:700;color:#c8a84b;white-space:nowrap}
 .lc-rent{font-size:13px;font-weight:600;color:#4ade80;margin-top:2px;white-space:nowrap}
 .lc-addr{font-size:14px;font-weight:600;color:#e2e8f0;margin-top:4px;line-height:1.3}
 .lc-det{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;padding-top:8px;border-top:1px solid #2a2d3a}
 .lc-d{font-size:13px;font-weight:600;color:#e2e8f0}
 .lc{padding:8px 11px;margin-bottom:6px}
-.lc .lc-tenant{font-size:14px}
+.lc .lc-tenant{font-size:17px;font-weight:800}
 .lc .lc-sf{font-size:16px}
 .lc .lc-rent{font-size:12px;margin-top:1px}
 .lc .lc-addr{font-size:12.5px;margin-top:2px}
 .lc .card-meta{margin-top:4px;gap:3px}
 .lc .pill{font-size:10px;padding:1px 6px}
+.lc-ll{font-size:11.5px;font-weight:600;color:#cbd5e1;align-self:center;margin-left:2px}
 .lc .lc-det{margin-top:5px;padding-top:5px;gap:2px 12px}
 .lc .lc-d{font-size:12px}
 #sale-list .card{padding:10px 11px;margin-bottom:8px}
-#sale-list .card-addr{font-size:13.5px}
+#sale-list .card-addr{font-size:15.5px;font-weight:800;color:#fff}
 #sale-list .card-price{font-size:13.5px}
 #sale-list .card-psf,#sale-list .card-cap{font-size:11.5px}
 #sale-list .card-meta{margin-top:4px}
@@ -112,6 +113,8 @@ body{background:#0f1117;color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFo
 .card-right{text-align:right;flex-shrink:0}
 .card-psf{font-size:12px;font-weight:600;color:#fcd34d;margin-top:3px;white-space:nowrap}
 .card-cap{font-size:12px;font-weight:600;color:#4ade80;margin-top:2px;white-space:nowrap}
+.card-cap.vac{color:#f87171}
+.card-walt{font-size:11.5px;font-weight:600;color:#cbd5e1;margin-top:2px;white-space:nowrap}
 .card-addr-city{font-weight:400;color:#94a3b8;font-size:13px}
 </style>
 </head>
@@ -286,19 +289,22 @@ function renderSale(){
 
     const psfTxt = e.psf ? e.psf + '/sf' : '';
     const capRaw = (e.capRate||'').trim();
-    const capTxt = (capRaw && capRaw!=='-') ? (/%/.test(capRaw) ? capRaw + ' cap' : capRaw) : '';
+    const isVac = /vacant/i.test(capRaw) || /^0(\.0+)?%?$/.test(String(e.occupancy||'').trim());
+    const capTxt = isVac ? 'Vacant' : ((capRaw && capRaw!=='-') ? (/%/.test(capRaw) ? capRaw + ' cap' : capRaw) : '');
+    const wn = parseFloat(e.walt);
+    const waltTxt = (!isVac && wn > 0) ? (String(e.walt).trim() + (wn===1 ? ' yr' : ' yrs') + ' WALT') : '';
     const clsPill  = e.class  ? '<span class="pill p-gray">Class ' + e.class + '</span>' : '';
     const sf       = e.rsf ? Number(e.rsf).toLocaleString() + ' SF' : '';
     const meta     = [sf, fmtClr(e.clearHeight) ? fmtClr(e.clearHeight)+' clear' : '', e.yrBuilt ? 'Built '+e.yrBuilt : ''].filter(Boolean).join(' · ');
 
     return '<div class="card" onclick="showSale(' + i + ')">'
       + '<div class="card-row"><div class="card-left"><div class="card-addr">' + esc(e.address) + (e.city ? '<span class="card-addr-city">, ' + esc(e.city) + '</span>' : '') + '</div>'
-          + '<div class="card-meta">' + datePill + clsPill + '</div>'
+          + '<div class="card-meta">' + datePill + clsPill + (waltTxt ? '<span class="pill p-gray">' + esc(waltTxt) + '</span>' : '') + '</div>'
           + '<div class="card-sub">' + esc(meta) + '</div></div>'
       + ((e.price||psfTxt||capTxt) ? '<div class="card-right">'
           + (e.price ? '<div class="card-price">' + e.price + '</div>' : '')
           + (psfTxt ? '<div class="card-psf">' + esc(psfTxt) + '</div>' : '')
-          + (capTxt ? '<div class="card-cap">' + esc(capTxt) + '</div>' : '')
+          + (capTxt ? '<div class="card-cap' + (isVac ? ' vac' : '') + '">' + esc(capTxt) + '</div>' : '')
           + '</div>' : '')
       + '</div>'
       + (e.buyer || e.seller ? '<div class="card-parties">' 
@@ -410,7 +416,7 @@ function renderLease(){
       +   (rentTxt ? '<div class="lc-rent">' + esc(rentTxt) + '</div>' : '')
       + '</div>' : '')
       + '</div>'
-      + '<div class="card-meta">' + datePill + typPill + '</div>'
+      + '<div class="card-meta">' + datePill + typPill + (l.landlord ? '<span class="lc-ll">' + esc(l.landlord) + '</span>' : '') + '</div>'
       + (det ? '<div class="lc-det">' + det + '</div>' : '')
       + '</div>';
   }).join('');
